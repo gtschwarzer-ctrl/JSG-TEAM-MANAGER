@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JSG Team Manager V1.2</title>
+<title>JSG Team Manager V1.3</title>
 <style>
 :root {
   --red:#c8102e; --black:#111; --bg:#f5f5f7; --card:#fff; --text:#111; --muted:#777; --line:#e5e5e5;
-  --green:#16a34a; --orange:#d97706; --blue:#2563eb; --danger:#dc2626;
+  --danger:#dc2626;
 }
 .dark { --bg:#111; --card:#1f1f1f; --text:#f7f7f7; --muted:#aaa; --line:#333; }
 * { box-sizing:border-box; }
@@ -26,6 +26,7 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,s
 .btn { border:1px solid var(--line); background:var(--card); color:var(--text); padding:10px 12px; border-radius:14px; font-size:15px; cursor:pointer; }
 .btn.primary { background:var(--red); color:white; border-color:var(--red); }
 .btn.danger { background:var(--danger); color:white; border-color:var(--danger); }
+.btn.small { padding:7px 10px; font-size:13px; }
 .card { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:16px; margin-bottom:14px; }
 .grid { display:grid; gap:12px; }
 .stats { grid-template-columns:repeat(2,1fr); }
@@ -39,6 +40,7 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,s
 .nav button.active { color:var(--red); font-weight:800; }
 .nav .ico { font-size:22px; }
 input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); background:var(--card); color:var(--text); border-radius:14px; margin-bottom:10px; font-size:16px; }
+textarea { min-height:80px; resize:vertical; }
 .row { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); }
 .row:last-child { border-bottom:0; }
 .badge { background:var(--red); color:white; padding:4px 9px; border-radius:999px; font-size:12px; font-weight:800; }
@@ -52,6 +54,7 @@ input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); 
 .team-title { font-size:18px; font-weight:900; margin:14px 0 8px; }
 .kpi-line { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
 .kpi-line span { background:rgba(128,128,128,.12); padding:5px 8px; border-radius:999px; font-size:12px; color:var(--muted); }
+.skill-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
 @media(min-width:900px) {
   body { padding-bottom:0; }
   .app { display:grid; grid-template-columns:290px 1fr; min-height:100vh; }
@@ -61,6 +64,7 @@ input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); 
   .nav button.active { background:var(--red); color:white; }
   .main { padding:28px; }
   .stats { grid-template-columns:repeat(4,1fr); }
+  .skill-grid { grid-template-columns:repeat(3,1fr); }
 }
 </style>
 </head>
@@ -100,19 +104,21 @@ input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); 
 </div>
 <div class="modal" id="modal" onclick="if(event.target===modal)closeModal()"><div class="dialog" id="dialog"></div></div>
 <script>
-const KEY="jsg-v12";
-let data=JSON.parse(localStorage.getItem(KEY)||"null")||{players:[],trainings:[],matches:[],coaches:["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"]};
+const KEY="jsg-v13";
+const old=JSON.parse(localStorage.getItem("jsg-v12")||"null");
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||old||{players:[],trainings:[],matches:[],coaches:["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"]};
 if(!data.coaches) data.coaches=["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"];
 if(data.players.length===0){
- data.players=[{id:id(),name:"Leon",team:"F1",number:"10"},{id:id(),name:"Finn",team:"F1",number:"7"},{id:id(),name:"Ben",team:"F2",number:"9"}];
+ data.players=[{id:id(),name:"Leon",team:"F1",number:"10",position:""},{id:id(),name:"Finn",team:"F1",number:"7",position:""},{id:id(),name:"Ben",team:"F2",number:"9",position:""}];
  save();
 }
+const SKILLS=["Balance","Torschuss","Pass","Ballkontrolle","Schnelligkeit","Koordination","Raumgefühl","Dribbling","Zweikampf","Spielaufbau","Torwart","Teamwork"];
 function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
-function sortedPlayers(team=null){return data.players.filter(p=>!team||p.team===team).sort((a,b)=>(a.team+b.name).localeCompare(b.team+a.name,"de"))}
+function sortedPlayers(team=null){return data.players.filter(p=>!team||p.team===team).sort((a,b)=>(a.team+a.name).localeCompare(b.team+b.name,"de"))}
 function sortedCoaches(){return [...data.coaches].sort((a,b)=>a.localeCompare(b,"de"))}
-function show(p,b){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");title.textContent={dashboard:"Dashboard",players:"Spieler",training:"Training",matches:"Spiele",stats:"Statistiken"}[p];subtitle.textContent={dashboard:"Übersicht der Saison",players:"Kader F1 und F2",training:"Anwesenheit erfassen",matches:"Ergebnisse, Tore und Assists",stats:"Rankings und Kennzahlen"}[p];render()}
+function show(p,b){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");title.textContent={dashboard:"Dashboard",players:"Spieler",training:"Training",matches:"Spiele",stats:"Statistiken"}[p];subtitle.textContent={dashboard:"Übersicht der Saison",players:"Kader F1 und F2",training:"Anwesenheit und Fähigkeiten",matches:"Ergebnisse, Tore und Assists",stats:"Rankings und Kennzahlen"}[p];render()}
 function toggleDark(){document.body.classList.toggle("dark")}
 function goals(pid){return data.matches.reduce((a,m)=>a+(m.goals||[]).filter(g=>g.scorer===pid).length,0)}
 function assists(pid){return data.matches.reduce((a,m)=>a+(m.goals||[]).filter(g=>g.assist===pid).length,0)}
@@ -144,30 +150,47 @@ function renderDashboard(){
  ${stat("Spielteilnahme F1",avgMatchPresence("F1")+"%","Ø Einsätze")}
  ${stat("Spielteilnahme F2",avgMatchPresence("F2")+"%","Ø Einsätze")}
  ${stat("Torjäger",esc(topGoal.p.name),topGoal.value+" Tore")}
- ${stat("Top Assists",esc(topAssist.p.name),topAssist.value+" Assists")}
+ ${stat("Assist-König",esc(topAssist.p.name),topAssist.value+" Assists")}
  ${stat("Meiste Spiele",esc(topGames.p.name),topGames.value+" Spiele")}
  ${stat("Training Top",esc(topTrain.p.name),topTrain.value+"%")}
  </div>
  <div class="card"><h3>Trainerteam</h3>${sortedCoaches().map(c=>`<div class="row"><span>${esc(c)}</span><span class="badge">Trainer</span></div>`).join("")}</div>`;
 }
 function renderPlayers(){
- players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+["F1","F2"].map(team=>`<div class="team-title">${team}</div>`+sortedPlayers(team).map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="kpi-line"><span>#${esc(p.number||"-")}</span><span>⚽ ${goals(p.id)}</span><span>🎯 ${assists(p.id)}</span><span>⭐ ${scorerPoints(p.id)}</span><span>🏃 ${attendance(p.id)}%</span><span>🎮 ${games(p.id)}</span></div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("")).join("");
+ players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+["F1","F2"].map(team=>`<div class="team-title">${team}</div>`+sortedPlayers(team).map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="kpi-line"><span>#${esc(p.number||"-")}</span><span>${esc(p.position||"-")}</span><span>⚽ ${goals(p.id)}</span><span>🎯 ${assists(p.id)}</span><span>⭐ ${scorerPoints(p.id)}</span><span>🏃 ${attendance(p.id)}%</span><span>🎮 ${games(p.id)} / ${matchPresence(p.id)}%</span></div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn" onclick="openPlayer('${p.id}')">Bearbeiten</button> <button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("")).join("");
 }
-function renderTraining(){training.innerHTML=`<div class="card"><button class="btn primary" onclick="openTraining()">+ Training</button></div>`+data.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="card"><b>${esc(t.date)}</b><div class="sub">${(t.att||[]).length} Teilnehmer</div></div>`).join("");}
-function renderMatches(){matches.innerHTML=`<div class="card"><button class="btn primary" onclick="openMatch()">+ Spiel</button></div>`+data.matches.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<div class="card"><b>${m.team} · JSG ${m.gf}:${m.ga} ${esc(m.opp)}</b><div class="sub">${esc(m.date)} · Spieler: ${(m.players||[]).length}</div><div class="sub">${(m.goals||[]).map(g=>`⚽ ${esc(data.players.find(p=>p.id===g.scorer)?.name||"?")}${g.assist?` (🎯 ${esc(data.players.find(p=>p.id===g.assist)?.name||"?")})`:""}`).join("<br>")}</div></div>`).join("");}
+function renderTraining(){
+ training.innerHTML=`<div class="card"><button class="btn primary" onclick="openTraining()">+ Training</button></div>`+data.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="card"><b>${esc(t.date)}</b><div class="sub">${(t.att||[]).length} Teilnehmer</div><div class="kpi-line">${(t.skills||[]).map(s=>`<span>${esc(s)}</span>`).join("")}</div><br><button class="btn" onclick="openTraining('${t.id}')">Bearbeiten</button> <button class="btn danger" onclick="delTraining('${t.id}')">Löschen</button></div>`).join("");
+}
+function renderMatches(){
+ matches.innerHTML=`<div class="card"><button class="btn primary" onclick="openMatch()">+ Spiel</button></div>`+data.matches.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<div class="card"><b>${m.team} · JSG ${m.gf}:${m.ga} ${esc(m.opp)}</b><div class="sub">${esc(m.date)} · Spieler: ${(m.players||[]).length}</div><div class="sub">${(m.goals||[]).map(g=>`⚽ ${esc(data.players.find(p=>p.id===g.scorer)?.name||"?")}${g.assist?` (🎯 ${esc(data.players.find(p=>p.id===g.assist)?.name||"?")})`:""}`).join("<br>")}</div><br><button class="btn" onclick="openMatch('${m.id}')">Bearbeiten</button> <button class="btn danger" onclick="delMatch('${m.id}')">Löschen</button></div>`).join("");
+}
 function rank(title,arr,unit){return `<div class="card"><h3>${title}</h3>${arr.map((r,i)=>`<div class="row"><span>${i+1}. ${esc(r.name)} <span class="badge ${r.team==="F2"?"black":""}">${r.team}</span></span><b>${r.value} ${unit}</b></div>`).join("")}</div>`}
-function renderStats(){let base=fn=>data.players.map(p=>({name:p.name,team:p.team,value:fn(p.id)})).sort((a,b)=>b.value-a.value);stats.innerHTML=rank("Torjäger",base(goals),"Tore")+rank("Assists",base(assists),"Assists")+rank("Scorerpunkte",base(scorerPoints),"Punkte")+rank("Trainingsanwesenheit",base(attendance),"%")+rank("Spielteilnahme",base(matchPresence),"%")+rank("Spieleinsätze",base(games),"Spiele");}
+function renderStats(){let base=fn=>data.players.map(p=>({name:p.name,team:p.team,value:fn(p.id)})).sort((a,b)=>b.value-a.value);stats.innerHTML=rank("⚽ Torjäger",base(goals),"Tore")+rank("🎯 Assist-König",base(assists),"Assists")+rank("⭐ Scorerpunkte",base(scorerPoints),"Punkte")+rank("🏃 Trainingsanwesenheit",base(attendance),"%")+rank("🎮 Spieleinsätze",base(games),"Spiele")+rank("🎮 Spielteilnahme",base(matchPresence),"%");}
 function openModal(h){dialog.innerHTML=h;modal.classList.add("open")} function closeModal(){modal.classList.remove("open")}
 function openQuick(){openModal(`<h2>Neu</h2><button class="btn primary" onclick="openPlayer()">Spieler</button> <button class="btn primary" onclick="openTraining()">Training</button> <button class="btn primary" onclick="openMatch()">Spiel</button>`)}
-function openPlayer(){openModal(`<h2>Neuer Spieler</h2><input id="pn" placeholder="Name"><select id="pt"><option>F1</option><option>F2</option></select><input id="num" placeholder="Nummer"><button class="btn primary" onclick="savePlayer()">Speichern</button>`)}
-function savePlayer(){if(!pn.value.trim())return;data.players.push({id:id(),name:pn.value.trim(),team:pt.value,number:num.value.trim()});save();closeModal();render()}
+function openPlayer(pid=""){
+ let p=data.players.find(x=>x.id===pid)||{id:"",name:"",team:"F1",number:"",position:""};
+ openModal(`<h2>${pid?"Spieler bearbeiten":"Neuer Spieler"}</h2><input id="pn" placeholder="Name" value="${esc(p.name)}"><select id="pt"><option ${p.team==="F1"?"selected":""}>F1</option><option ${p.team==="F2"?"selected":""}>F2</option></select><input id="num" placeholder="Nummer" value="${esc(p.number)}"><input id="pos" placeholder="Position" value="${esc(p.position)}"><button class="btn primary" onclick="savePlayer('${pid}')">Speichern</button>`);
+}
+function savePlayer(pid=""){if(!pn.value.trim())return;let obj={id:pid||id(),name:pn.value.trim(),team:pt.value,number:num.value.trim(),position:pos.value.trim()}; if(pid)data.players=data.players.map(p=>p.id===pid?obj:p); else data.players.push(obj);save();closeModal();render()}
 function delPlayer(pid){if(confirm("Spieler löschen?")){data.players=data.players.filter(p=>p.id!==pid);save();render()}}
-function openTraining(){openModal(`<h2>Training</h2><input type="date" id="td" value="${new Date().toISOString().slice(0,10)}">${["F1","F2"].map(team=>`<h3>${team}</h3>`+sortedPlayers(team).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></label>`).join("")).join("")}<button class="btn primary" onclick="saveTraining()">Speichern</button>`)}
-function saveTraining(){data.trainings.push({id:id(),date:td.value,att:[...dialog.querySelectorAll("input[type=checkbox]:checked")].map(x=>x.value)});save();closeModal();render()}
-function openMatch(){openModal(`<h2>Spiel</h2><select id="mt" onchange="fillMatch()"><option>F1</option><option>F2</option></select><input type="date" id="md" value="${new Date().toISOString().slice(0,10)}"><input id="mo" placeholder="Gegner"><input id="gf" type="number" placeholder="Tore JSG"><input id="ga" type="number" placeholder="Gegentore"><h3>Spieler</h3><div id="mp"></div><h3>Tore und Assists</h3><div id="gs"></div><button class="btn" onclick="addGoal()">+ Tor</button><button class="btn primary" onclick="saveMatch()">Speichern</button>`);fillMatch()}
-function fillMatch(){mp.innerHTML=sortedPlayers(mt.value).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)}</label>`).join("");gs.innerHTML=""}
-function addGoal(){let opts=sortedPlayers(mt.value).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");gs.insertAdjacentHTML("beforeend",`<div class="goalline"><select class="scorer"><option value="">Torschütze</option>${opts}</select><select class="assist"><option value="">Kein Assist</option>${opts}</select><button class="btn danger" onclick="this.parentElement.remove()">x</button></div>`)}
-function saveMatch(){data.matches.push({id:id(),team:mt.value,date:md.value,opp:mo.value,gf:Number(gf.value||0),ga:Number(ga.value||0),players:[...mp.querySelectorAll("input:checked")].map(x=>x.value),goals:[...gs.querySelectorAll(".goalline")].map(line=>({scorer:line.querySelector(".scorer").value,assist:line.querySelector(".assist").value})).filter(g=>g.scorer)});save();closeModal();render()}
+function openTraining(tid=""){
+ let t=data.trainings.find(x=>x.id===tid)||{id:"",date:new Date().toISOString().slice(0,10),att:sortedPlayers().map(p=>p.id),skills:[]};
+ openModal(`<h2>${tid?"Training bearbeiten":"Training"}</h2><input type="date" id="td" value="${esc(t.date)}"><h3>Fähigkeiten</h3><div class="skill-grid">${SKILLS.map(s=>`<label class="check"><input type="checkbox" class="skill" value="${s}" ${(t.skills||[]).includes(s)?"checked":""}> ${s}</label>`).join("")}</div>${["F1","F2"].map(team=>`<h3>${team}</h3>`+sortedPlayers(team).map(p=>`<label class="check"><input type="checkbox" class="att" value="${p.id}" ${(t.att||[]).includes(p.id)?"checked":""}> ${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></label>`).join("")).join("")}<button class="btn primary" onclick="saveTraining('${tid}')">Speichern</button>`);
+}
+function saveTraining(tid=""){let obj={id:tid||id(),date:td.value,att:[...dialog.querySelectorAll(".att:checked")].map(x=>x.value),skills:[...dialog.querySelectorAll(".skill:checked")].map(x=>x.value)}; if(tid)data.trainings=data.trainings.map(t=>t.id===tid?obj:t); else data.trainings.push(obj);save();closeModal();render()}
+function delTraining(tid){if(confirm("Training löschen?")){data.trainings=data.trainings.filter(t=>t.id!==tid);save();render()}}
+function openMatch(mid=""){
+ let m=data.matches.find(x=>x.id===mid)||{id:"",team:"F1",date:new Date().toISOString().slice(0,10),opp:"",gf:"",ga:"",players:[],goals:[]};
+ openModal(`<h2>${mid?"Spiel bearbeiten":"Spiel"}</h2><select id="mt" onchange="fillMatch('${mid}')"><option ${m.team==="F1"?"selected":""}>F1</option><option ${m.team==="F2"?"selected":""}>F2</option></select><input type="date" id="md" value="${esc(m.date)}"><input id="mo" placeholder="Gegner" value="${esc(m.opp)}"><input id="gf" type="number" placeholder="Tore JSG" value="${esc(m.gf)}"><input id="ga" type="number" placeholder="Gegentore" value="${esc(m.ga)}"><h3>Spieler</h3><div id="mp"></div><h3>Tore und Assists</h3><div id="gs"></div><button class="btn" onclick="addGoal()">+ Tor</button><button class="btn primary" onclick="saveMatch('${mid}')">Speichern</button>`);
+ fillMatch(mid);
+ (m.goals||[]).forEach(g=>addGoal(g.scorer,g.assist));
+}
+function fillMatch(mid=""){let m=data.matches.find(x=>x.id===mid)||{players:[]};mp.innerHTML=sortedPlayers(mt.value).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" ${!mid||(m.players||[]).includes(p.id)?"checked":""}> ${esc(p.name)}</label>`).join("");gs.innerHTML=""}
+function addGoal(scorer="",assist=""){let opts=sortedPlayers(mt.value).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");gs.insertAdjacentHTML("beforeend",`<div class="goalline"><select class="scorer"><option value="">Torschütze</option>${opts}</select><select class="assist"><option value="">Kein Assist</option>${opts}</select><button class="btn danger" onclick="this.parentElement.remove()">x</button></div>`);let line=gs.lastElementChild;line.querySelector(".scorer").value=scorer;line.querySelector(".assist").value=assist;}
+function saveMatch(mid=""){let obj={id:mid||id(),team:mt.value,date:md.value,opp:mo.value,gf:Number(gf.value||0),ga:Number(ga.value||0),players:[...mp.querySelectorAll("input:checked")].map(x=>x.value),goals:[...gs.querySelectorAll(".goalline")].map(line=>({scorer:line.querySelector(".scorer").value,assist:line.querySelector(".assist").value})).filter(g=>g.scorer)}; if(mid)data.matches=data.matches.map(m=>m.id===mid?obj:m); else data.matches.push(obj);save();closeModal();render()}
+function delMatch(mid){if(confirm("Spiel löschen?")){data.matches=data.matches.filter(m=>m.id!==mid);save();render()}}
 function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));a.download="jsg-team-manager-backup.json";a.click()}
 function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data=JSON.parse(r.result);save();render()};r.readAsText(f)}
 render();
