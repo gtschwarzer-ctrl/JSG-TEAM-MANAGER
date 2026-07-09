@@ -3,33 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JSG Team Manager V1.1</title>
+<title>JSG Team Manager V1.2</title>
 <style>
 :root {
   --red:#c8102e; --black:#111; --bg:#f5f5f7; --card:#fff; --text:#111; --muted:#777; --line:#e5e5e5;
+  --green:#16a34a; --orange:#d97706; --blue:#2563eb; --danger:#dc2626;
 }
 .dark { --bg:#111; --card:#1f1f1f; --text:#f7f7f7; --muted:#aaa; --line:#333; }
 * { box-sizing:border-box; }
-body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--text); padding-bottom:82px; }
-.header { background:var(--black); color:white; padding:22px 18px 18px; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; background:var(--bg); color:var(--text); padding-bottom:84px; }
+.header { background:var(--black); color:white; padding:22px 18px 16px; }
 .brand { display:flex; align-items:center; gap:14px; }
 .logo { width:68px; height:68px; border-radius:50%; background:white; padding:4px; object-fit:contain; }
 .brand h1 { margin:0; font-size:28px; line-height:1.05; }
 .brand p { margin:5px 0 0; color:#ddd; }
-.privacy { margin-top:18px; background:rgba(255,255,255,.10); border-radius:18px; padding:14px; font-size:14px; line-height:1.35; }
+.trainer-box { margin-top:14px; background:rgba(255,255,255,.10); border-radius:18px; padding:13px; font-size:14px; line-height:1.45; }
 .main { padding:18px; }
 .top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:18px; }
-.top h2 { margin:0; font-size:36px; letter-spacing:-.04em; }
+.top h2 { margin:0; font-size:34px; letter-spacing:-.04em; }
 .top p { margin:4px 0 0; color:var(--muted); }
 .actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-.btn { border:1px solid var(--line); background:var(--card); color:var(--text); padding:10px 12px; border-radius:14px; font-size:15px; }
+.btn { border:1px solid var(--line); background:var(--card); color:var(--text); padding:10px 12px; border-radius:14px; font-size:15px; cursor:pointer; }
 .btn.primary { background:var(--red); color:white; border-color:var(--red); }
-.btn.danger { background:#dc2626; color:white; border-color:#dc2626; }
+.btn.danger { background:var(--danger); color:white; border-color:var(--danger); }
 .card { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:16px; margin-bottom:14px; }
 .grid { display:grid; gap:12px; }
 .stats { grid-template-columns:repeat(2,1fr); }
 .label { color:var(--muted); font-size:12px; text-transform:uppercase; font-weight:800; letter-spacing:.08em; }
-.value { font-size:34px; font-weight:900; margin-top:5px; }
+.value { font-size:31px; font-weight:900; margin-top:5px; letter-spacing:-.03em; }
 .sub { color:var(--muted); font-size:13px; margin-top:4px; }
 .page { display:none; }
 .page.active { display:block; }
@@ -39,16 +40,21 @@ body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,s
 .nav .ico { font-size:22px; }
 input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); background:var(--card); color:var(--text); border-radius:14px; margin-bottom:10px; font-size:16px; }
 .row { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); }
+.row:last-child { border-bottom:0; }
 .badge { background:var(--red); color:white; padding:4px 9px; border-radius:999px; font-size:12px; font-weight:800; }
 .badge.black { background:#222; }
 .modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; z-index:20; }
 .modal.open { display:flex; }
-.dialog { background:var(--card); width:100%; max-height:88vh; overflow:auto; border-radius:24px 24px 0 0; padding:18px; }
+.dialog { background:var(--card); width:100%; max-height:90vh; overflow:auto; border-radius:24px 24px 0 0; padding:18px; }
 .check { display:flex; gap:8px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:14px; margin-bottom:8px; }
 .check input { width:auto; margin:0; }
+.goalline { display:grid; grid-template-columns:1fr 1fr auto; gap:8px; align-items:center; margin-bottom:8px; }
+.team-title { font-size:18px; font-weight:900; margin:14px 0 8px; }
+.kpi-line { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.kpi-line span { background:rgba(128,128,128,.12); padding:5px 8px; border-radius:999px; font-size:12px; color:var(--muted); }
 @media(min-width:900px) {
   body { padding-bottom:0; }
-  .app { display:grid; grid-template-columns:280px 1fr; min-height:100vh; }
+  .app { display:grid; grid-template-columns:290px 1fr; min-height:100vh; }
   .header { min-height:100vh; }
   .nav { position:static; display:grid; grid-template-columns:1fr; background:transparent; border:0; padding:18px 0 0; }
   .nav button { color:#ddd; background:transparent; border-radius:14px; flex-direction:row; justify-content:flex-start; font-size:15px; padding:12px; }
@@ -72,18 +78,19 @@ input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); 
     <button onclick="show('matches',this)"><span class="ico">⚽</span><span>Spiele</span></button>
     <button onclick="show('stats',this)"><span class="ico">📊</span><span>Stats</span></button>
   </nav>
-  <div class="privacy"><b>Datenschutz</b><br>Keine Fotos, keine Kontaktdaten, keine medizinischen Daten.</div>
+  <div class="trainer-box"><b>Trainerteam</b><br><span id="trainerList"></span><br><br>Keine Fotos, keine Kontaktdaten, keine medizinischen Daten.</div>
 </header>
-
 <main class="main">
   <div class="top">
     <div><h2 id="title">Dashboard</h2><p id="subtitle">Übersicht der Saison</p></div>
     <div class="actions">
       <button class="btn" onclick="toggleDark()">🌙</button>
+      <button class="btn" onclick="exportData()">Export</button>
+      <button class="btn" onclick="document.getElementById('importFile').click()">Import</button>
+      <input id="importFile" type="file" accept=".json" style="display:none" onchange="importData(event)">
       <button class="btn primary" onclick="openQuick()">+ Neu</button>
     </div>
   </div>
-
   <section id="dashboard" class="page active"></section>
   <section id="players" class="page"></section>
   <section id="training" class="page"></section>
@@ -91,12 +98,11 @@ input,select,textarea { width:100%; padding:12px; border:1px solid var(--line); 
   <section id="stats" class="page"></section>
 </main>
 </div>
-
 <div class="modal" id="modal" onclick="if(event.target===modal)closeModal()"><div class="dialog" id="dialog"></div></div>
-
 <script>
-const KEY="jsg-v11";
-let data=JSON.parse(localStorage.getItem(KEY)||"null")||{players:[],trainings:[],matches:[]};
+const KEY="jsg-v12";
+let data=JSON.parse(localStorage.getItem(KEY)||"null")||{players:[],trainings:[],matches:[],coaches:["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"]};
+if(!data.coaches) data.coaches=["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"];
 if(data.players.length===0){
  data.players=[{id:id(),name:"Leon",team:"F1",number:"10"},{id:id(),name:"Finn",team:"F1",number:"7"},{id:id(),name:"Ben",team:"F2",number:"9"}];
  save();
@@ -104,36 +110,66 @@ if(data.players.length===0){
 function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
-function show(p,b){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");title.textContent={dashboard:"Dashboard",players:"Spieler",training:"Training",matches:"Spiele",stats:"Statistiken"}[p];render()}
+function sortedPlayers(team=null){return data.players.filter(p=>!team||p.team===team).sort((a,b)=>(a.team+b.name).localeCompare(b.team+a.name,"de"))}
+function sortedCoaches(){return [...data.coaches].sort((a,b)=>a.localeCompare(b,"de"))}
+function show(p,b){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");title.textContent={dashboard:"Dashboard",players:"Spieler",training:"Training",matches:"Spiele",stats:"Statistiken"}[p];subtitle.textContent={dashboard:"Übersicht der Saison",players:"Kader F1 und F2",training:"Anwesenheit erfassen",matches:"Ergebnisse, Tore und Assists",stats:"Rankings und Kennzahlen"}[p];render()}
 function toggleDark(){document.body.classList.toggle("dark")}
-function goals(pid){return data.matches.reduce((a,m)=>a+(m.scorers||[]).filter(x=>x===pid).length,0)}
+function goals(pid){return data.matches.reduce((a,m)=>a+(m.goals||[]).filter(g=>g.scorer===pid).length,0)}
+function assists(pid){return data.matches.reduce((a,m)=>a+(m.goals||[]).filter(g=>g.assist===pid).length,0)}
 function games(pid){return data.matches.reduce((a,m)=>a+((m.players||[]).includes(pid)?1:0),0)}
 function attendance(pid){if(!data.trainings.length)return 0;return Math.round(data.trainings.filter(t=>(t.att||[]).includes(pid)).length/data.trainings.length*100)}
-function winRate(team){let m=data.matches.filter(x=>x.team===team);if(!m.length)return 0;return Math.round(m.filter(x=>Number(x.gf)>Number(x.ga)).length/m.length*100)}
-function render(){
+function matchPresence(pid){if(!data.matches.length)return 0;return Math.round(games(pid)/data.matches.length*100)}
+function scorerPoints(pid){return goals(pid)+assists(pid)}
+function teamMatches(team){return data.matches.filter(m=>m.team===team)}
+function winRate(team){let m=teamMatches(team);if(!m.length)return 0;return Math.round(m.filter(x=>Number(x.gf)>Number(x.ga)).length/m.length*100)}
+function teamGoals(team){return teamMatches(team).reduce((a,m)=>a+Number(m.gf||0),0)}
+function teamAgainst(team){return teamMatches(team).reduce((a,m)=>a+Number(m.ga||0),0)}
+function teamAssists(team){return data.players.filter(p=>p.team===team).reduce((a,p)=>a+assists(p.id),0)}
+function avgTraining(team){let ps=sortedPlayers(team); if(!ps.length)return 0; return Math.round(ps.reduce((a,p)=>a+attendance(p.id),0)/ps.length)}
+function avgMatchPresence(team){let ps=sortedPlayers(team); if(!ps.length)return 0; return Math.round(ps.reduce((a,p)=>a+matchPresence(p.id),0)/ps.length)}
+function leader(fn){let arr=data.players.map(p=>({p,value:fn(p.id)})).sort((a,b)=>b.value-a.value);return arr[0]||{p:{name:"-"},value:0}}
+function render(){trainerList.innerHTML=sortedCoaches().map(esc).join("<br>");renderDashboard();renderPlayers();renderTraining();renderMatches();renderStats();}
+function stat(label,value,sub){return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div><div class="sub">${sub||""}</div></div>`}
+function renderDashboard(){
+ let topGoal=leader(goals), topAssist=leader(assists), topGames=leader(games), topTrain=leader(attendance);
  dashboard.innerHTML=`<div class="grid stats">
- <div class="card"><div class="label">F1 Siegquote</div><div class="value">${winRate("F1")}%</div><div class="sub">${data.matches.filter(m=>m.team==="F1").length} Spiele</div></div>
- <div class="card"><div class="label">F2 Siegquote</div><div class="value">${winRate("F2")}%</div><div class="sub">${data.matches.filter(m=>m.team==="F2").length} Spiele</div></div>
- <div class="card"><div class="label">Spieler</div><div class="value">${data.players.length}</div><div class="sub">F1 + F2</div></div>
- <div class="card"><div class="label">Trainings</div><div class="value">${data.trainings.length}</div><div class="sub">Saison</div></div>
- </div>${ranking("Torjäger",data.players.map(p=>({name:p.name,team:p.team,value:goals(p.id)})).sort((a,b)=>b.value-a.value),"Tore")}`;
- players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+data.players.map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="sub">#${esc(p.number)} · ⚽ ${goals(p.id)} · 🏃 ${attendance(p.id)}%</div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("");
- training.innerHTML=`<div class="card"><button class="btn primary" onclick="openTraining()">+ Training</button></div>`+data.trainings.map(t=>`<div class="card"><b>${esc(t.date)}</b><div class="sub">${(t.att||[]).length} Teilnehmer</div></div>`).join("");
- matches.innerHTML=`<div class="card"><button class="btn primary" onclick="openMatch()">+ Spiel</button></div>`+data.matches.map(m=>`<div class="card"><b>${m.team} · JSG ${m.gf}:${m.ga} ${esc(m.opp)}</b><div class="sub">${esc(m.date)} · Torschützen: ${(m.scorers||[]).map(id=>data.players.find(p=>p.id===id)?.name||"?").join(", ")}</div></div>`).join("");
- stats.innerHTML=ranking("Torjäger",data.players.map(p=>({name:p.name,team:p.team,value:goals(p.id)})).sort((a,b)=>b.value-a.value),"Tore")+ranking("Fairness",data.players.map(p=>({name:p.name,team:p.team,value:games(p.id)})).sort((a,b)=>b.value-a.value),"Spiele")+ranking("Training",data.players.map(p=>({name:p.name,team:p.team,value:attendance(p.id)})).sort((a,b)=>b.value-a.value),"%");
+ ${stat("F1 Siegquote",winRate("F1")+"%",teamMatches("F1").length+" Spiele")}
+ ${stat("F2 Siegquote",winRate("F2")+"%",teamMatches("F2").length+" Spiele")}
+ ${stat("Tore F1",teamGoals("F1"),teamGoals("F1")+":"+teamAgainst("F1")+" Torverhältnis")}
+ ${stat("Tore F2",teamGoals("F2"),teamGoals("F2")+":"+teamAgainst("F2")+" Torverhältnis")}
+ ${stat("Assists F1",teamAssists("F1"),"Vorlagen")}
+ ${stat("Assists F2",teamAssists("F2"),"Vorlagen")}
+ ${stat("Training F1",avgTraining("F1")+"%","Ø Anwesenheit")}
+ ${stat("Training F2",avgTraining("F2")+"%","Ø Anwesenheit")}
+ ${stat("Spielteilnahme F1",avgMatchPresence("F1")+"%","Ø Einsätze")}
+ ${stat("Spielteilnahme F2",avgMatchPresence("F2")+"%","Ø Einsätze")}
+ ${stat("Torjäger",esc(topGoal.p.name),topGoal.value+" Tore")}
+ ${stat("Top Assists",esc(topAssist.p.name),topAssist.value+" Assists")}
+ ${stat("Meiste Spiele",esc(topGames.p.name),topGames.value+" Spiele")}
+ ${stat("Training Top",esc(topTrain.p.name),topTrain.value+"%")}
+ </div>
+ <div class="card"><h3>Trainerteam</h3>${sortedCoaches().map(c=>`<div class="row"><span>${esc(c)}</span><span class="badge">Trainer</span></div>`).join("")}</div>`;
 }
-function ranking(title,arr,unit){return `<div class="card"><h3>${title}</h3>${arr.map((r,i)=>`<div class="row"><span>${i+1}. ${esc(r.name)} <span class="badge ${r.team==="F2"?"black":""}">${r.team}</span></span><b>${r.value} ${unit}</b></div>`).join("")}</div>`}
+function renderPlayers(){
+ players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+["F1","F2"].map(team=>`<div class="team-title">${team}</div>`+sortedPlayers(team).map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="kpi-line"><span>#${esc(p.number||"-")}</span><span>⚽ ${goals(p.id)}</span><span>🎯 ${assists(p.id)}</span><span>⭐ ${scorerPoints(p.id)}</span><span>🏃 ${attendance(p.id)}%</span><span>🎮 ${games(p.id)}</span></div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("")).join("");
+}
+function renderTraining(){training.innerHTML=`<div class="card"><button class="btn primary" onclick="openTraining()">+ Training</button></div>`+data.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="card"><b>${esc(t.date)}</b><div class="sub">${(t.att||[]).length} Teilnehmer</div></div>`).join("");}
+function renderMatches(){matches.innerHTML=`<div class="card"><button class="btn primary" onclick="openMatch()">+ Spiel</button></div>`+data.matches.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<div class="card"><b>${m.team} · JSG ${m.gf}:${m.ga} ${esc(m.opp)}</b><div class="sub">${esc(m.date)} · Spieler: ${(m.players||[]).length}</div><div class="sub">${(m.goals||[]).map(g=>`⚽ ${esc(data.players.find(p=>p.id===g.scorer)?.name||"?")}${g.assist?` (🎯 ${esc(data.players.find(p=>p.id===g.assist)?.name||"?")})`:""}`).join("<br>")}</div></div>`).join("");}
+function rank(title,arr,unit){return `<div class="card"><h3>${title}</h3>${arr.map((r,i)=>`<div class="row"><span>${i+1}. ${esc(r.name)} <span class="badge ${r.team==="F2"?"black":""}">${r.team}</span></span><b>${r.value} ${unit}</b></div>`).join("")}</div>`}
+function renderStats(){let base=fn=>data.players.map(p=>({name:p.name,team:p.team,value:fn(p.id)})).sort((a,b)=>b.value-a.value);stats.innerHTML=rank("Torjäger",base(goals),"Tore")+rank("Assists",base(assists),"Assists")+rank("Scorerpunkte",base(scorerPoints),"Punkte")+rank("Trainingsanwesenheit",base(attendance),"%")+rank("Spielteilnahme",base(matchPresence),"%")+rank("Spieleinsätze",base(games),"Spiele");}
 function openModal(h){dialog.innerHTML=h;modal.classList.add("open")} function closeModal(){modal.classList.remove("open")}
 function openQuick(){openModal(`<h2>Neu</h2><button class="btn primary" onclick="openPlayer()">Spieler</button> <button class="btn primary" onclick="openTraining()">Training</button> <button class="btn primary" onclick="openMatch()">Spiel</button>`)}
 function openPlayer(){openModal(`<h2>Neuer Spieler</h2><input id="pn" placeholder="Name"><select id="pt"><option>F1</option><option>F2</option></select><input id="num" placeholder="Nummer"><button class="btn primary" onclick="savePlayer()">Speichern</button>`)}
 function savePlayer(){if(!pn.value.trim())return;data.players.push({id:id(),name:pn.value.trim(),team:pt.value,number:num.value.trim()});save();closeModal();render()}
 function delPlayer(pid){if(confirm("Spieler löschen?")){data.players=data.players.filter(p=>p.id!==pid);save();render()}}
-function openTraining(){openModal(`<h2>Training</h2><input type="date" id="td" value="${new Date().toISOString().slice(0,10)}">${data.players.map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></label>`).join("")}<button class="btn primary" onclick="saveTraining()">Speichern</button>`)}
+function openTraining(){openModal(`<h2>Training</h2><input type="date" id="td" value="${new Date().toISOString().slice(0,10)}">${["F1","F2"].map(team=>`<h3>${team}</h3>`+sortedPlayers(team).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></label>`).join("")).join("")}<button class="btn primary" onclick="saveTraining()">Speichern</button>`)}
 function saveTraining(){data.trainings.push({id:id(),date:td.value,att:[...dialog.querySelectorAll("input[type=checkbox]:checked")].map(x=>x.value)});save();closeModal();render()}
-function openMatch(){openModal(`<h2>Spiel</h2><select id="mt" onchange="fillMatch()"><option>F1</option><option>F2</option></select><input type="date" id="md" value="${new Date().toISOString().slice(0,10)}"><input id="mo" placeholder="Gegner"><input id="gf" type="number" placeholder="Tore JSG"><input id="ga" type="number" placeholder="Gegentore"><h3>Spieler</h3><div id="mp"></div><h3>Tore</h3><div id="gs"></div><button class="btn" onclick="addGoal()">+ Tor</button><button class="btn primary" onclick="saveMatch()">Speichern</button>`);fillMatch();addGoal()}
-function fillMatch(){mp.innerHTML=data.players.filter(p=>p.team===mt.value).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)}</label>`).join("");gs.innerHTML=""}
-function addGoal(){gs.insertAdjacentHTML("beforeend",`<select>${data.players.filter(p=>p.team===mt.value).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("")}</select>`)}
-function saveMatch(){data.matches.push({id:id(),team:mt.value,date:md.value,opp:mo.value,gf:Number(gf.value||0),ga:Number(ga.value||0),players:[...mp.querySelectorAll("input:checked")].map(x=>x.value),scorers:[...gs.querySelectorAll("select")].map(x=>x.value)});save();closeModal();render()}
+function openMatch(){openModal(`<h2>Spiel</h2><select id="mt" onchange="fillMatch()"><option>F1</option><option>F2</option></select><input type="date" id="md" value="${new Date().toISOString().slice(0,10)}"><input id="mo" placeholder="Gegner"><input id="gf" type="number" placeholder="Tore JSG"><input id="ga" type="number" placeholder="Gegentore"><h3>Spieler</h3><div id="mp"></div><h3>Tore und Assists</h3><div id="gs"></div><button class="btn" onclick="addGoal()">+ Tor</button><button class="btn primary" onclick="saveMatch()">Speichern</button>`);fillMatch()}
+function fillMatch(){mp.innerHTML=sortedPlayers(mt.value).map(p=>`<label class="check"><input type="checkbox" value="${p.id}" checked> ${esc(p.name)}</label>`).join("");gs.innerHTML=""}
+function addGoal(){let opts=sortedPlayers(mt.value).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");gs.insertAdjacentHTML("beforeend",`<div class="goalline"><select class="scorer"><option value="">Torschütze</option>${opts}</select><select class="assist"><option value="">Kein Assist</option>${opts}</select><button class="btn danger" onclick="this.parentElement.remove()">x</button></div>`)}
+function saveMatch(){data.matches.push({id:id(),team:mt.value,date:md.value,opp:mo.value,gf:Number(gf.value||0),ga:Number(ga.value||0),players:[...mp.querySelectorAll("input:checked")].map(x=>x.value),goals:[...gs.querySelectorAll(".goalline")].map(line=>({scorer:line.querySelector(".scorer").value,assist:line.querySelector(".assist").value})).filter(g=>g.scorer)});save();closeModal();render()}
+function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));a.download="jsg-team-manager-backup.json";a.click()}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data=JSON.parse(r.result);save();render()};r.readAsText(f)}
 render();
 </script>
 </body>
