@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JSG Team Manager V2.0</title>
+<title>JSG Team Manager V2.2</title>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -19,10 +19,10 @@ window.FB = { initializeApp, getAuth, signInWithEmailAndPassword, signOut, onAut
 .header{background:var(--black);color:white;padding:22px 18px 16px}.brand{display:flex;align-items:center;gap:14px}.logo{width:68px;height:68px;border-radius:50%;background:white;padding:4px;object-fit:contain}.brand h1{margin:0;font-size:28px;line-height:1.05}.brand p{margin:5px 0 0;color:#ddd}.trainer-box{margin-top:14px;background:rgba(255,255,255,.10);border-radius:18px;padding:13px;font-size:14px;line-height:1.45}
 .main{padding:18px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.top h2{margin:0;font-size:34px;letter-spacing:-.04em}.top p{margin:4px 0 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 12px;border-radius:14px;font-size:15px;cursor:pointer}.btn.primary{background:var(--red);color:white;border-color:var(--red)}.btn.danger{background:var(--danger);color:white;border-color:var(--danger)}.btn.green{background:var(--green);color:white;border-color:var(--green)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(2,1fr)}.label{color:var(--muted);font-size:12px;text-transform:uppercase;font-weight:800;letter-spacing:.08em}.value{font-size:31px;font-weight:900;margin-top:5px;letter-spacing:-.03em}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}.stat-card{cursor:pointer;transition:.15s}.stat-card:active{transform:scale(.98)}.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(2,1fr)}.label{color:var(--muted);font-size:12px;text-transform:uppercase;font-weight:800;letter-spacing:.08em}.value{font-size:31px;font-weight:900;margin-top:5px;letter-spacing:-.03em}.sub{color:var(--muted);font-size:13px;margin-top:4px}
 .page{display:none}.page.active{display:block}.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:10}.nav button{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;padding:5px 2px}.nav button.active{color:var(--red);font-weight:800}.nav .ico{font-size:22px}
 input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;margin-bottom:10px;font-size:16px}textarea{min-height:80px;resize:vertical}.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.badge{background:var(--red);color:white;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800}.badge.black{background:#222}.badge.green{background:var(--green)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.dialog{background:var(--card);width:100%;max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px}.check{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px}.check input{width:auto;margin:0}.goalline{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}.team-title{font-size:18px;font-weight:900;margin:14px 0 8px}.kpi-line{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.kpi-line span{background:rgba(128,128,128,.12);padding:5px 8px;border-radius:999px;font-size:12px;color:var(--muted)}.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:20}.modal.open{display:flex}.dialog{background:var(--card);width:100%;max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px}.check{display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px}.check input{width:auto;margin:0}.goalline{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}.team-title{font-size:18px;font-weight:900;margin:14px 0 8px}.kpi-line{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.kpi-line span{background:rgba(128,128,128,.12);padding:5px 8px;border-radius:999px;font-size:12px;color:var(--muted)}.kpi-line button{border:0;background:rgba(128,128,128,.12);padding:5px 8px;border-radius:999px;font-size:12px;color:var(--muted);cursor:pointer}.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .login-wrap{min-height:100vh;display:grid;place-items:center;padding:18px}.login-card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px}.status{font-size:13px;color:var(--muted);margin-top:8px}#appShell{display:none}
 @media(min-width:900px){body{padding-bottom:0}.app{display:grid;grid-template-columns:290px 1fr;min-height:100vh}.header{min-height:100vh}.nav{position:static;display:grid;grid-template-columns:1fr;background:transparent;border:0;padding:18px 0 0}.nav button{color:#ddd;background:transparent;border-radius:14px;flex-direction:row;justify-content:flex-start;font-size:15px;padding:12px}.nav button.active{background:var(--red);color:white}.main{padding:28px}.stats{grid-template-columns:repeat(4,1fr)}.skill-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
@@ -347,10 +347,15 @@ function avgTraining(team){let ps=sortedPlayers(team);if(!ps.length)return 0;ret
 function avgMatchPresence(team){let ps=sortedPlayers(team);if(!ps.length)return 0;return Math.round(ps.reduce((a,p)=>a+matchPresence(p.id),0)/ps.length)}
 function leader(fn){let arr=data.players.map(p=>({p,value:fn(p.id)})).sort((a,b)=>b.value-a.value);return arr[0]||{p:{name:"-"},value:0}}
 function render(){trainerList.innerHTML=sortedCoaches().map(esc).join("<br>");renderDashboard();renderPlayers();renderTraining();renderMatches();renderStats()}
-function stat(label,value,sub){return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div><div class="sub">${sub||""}</div></div>`}
+function stat(label,value,sub){
+  return `<div class="card stat-card" onclick="showDashboardStat('${String(label).replace(/'/g,"\\'")}','${String(value).replace(/'/g,"\\'")}','${String(sub||"").replace(/'/g,"\\'")}')"><div class="label">${label}</div><div class="value">${value}</div><div class="sub">${sub||""}</div></div>`
+}
 function renderDashboard(){
  let topGoal=leader(goals),topAssist=leader(assists),topGames=leader(games),topTrain=leader(attendance);
  dashboard.innerHTML=`<div class="grid stats">
+ ${stat("Spieler gesamt",data.players.length,"F1: "+sortedPlayers("F1").length+" · F2: "+sortedPlayers("F2").length)}
+ ${stat("F1 Spieler",sortedPlayers("F1").length,"Kader F1")}
+ ${stat("F2 Spieler",sortedPlayers("F2").length,"Kader F2")}
  ${stat("F1 Siegquote",winRate("F1")+"%",teamMatches("F1").length+" Spiele")}
  ${stat("F2 Siegquote",winRate("F2")+"%",teamMatches("F2").length+" Spiele")}
  ${stat("Tore F1",teamGoals("F1"),teamGoals("F1")+":"+teamAgainst("F1")+" Torverhältnis")}
@@ -369,13 +374,127 @@ function renderDashboard(){
  <div class="card"><h3>Trainerteam</h3>${sortedCoaches().map(c=>`<div class="row"><span>${esc(c)}</span><span class="badge">Trainer</span></div>`).join("")}</div>`;
 }
 function renderPlayers(){
- players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+["F1","F2"].map(team=>`<div class="team-title">${team}</div>`+sortedPlayers(team).map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="kpi-line"><span>#${esc(p.number||"-")}</span><span>${esc(p.position||"-")}</span><span>⚽ ${goals(p.id)}</span><span>🎯 ${assists(p.id)}</span><span>⭐ ${scorerPoints(p.id)}</span><span>🏃 ${attendance(p.id)}%</span><span>🎮 ${games(p.id)} / ${matchPresence(p.id)}%</span></div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn" onclick="openPlayer('${p.id}')">Bearbeiten</button> <button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("")).join("");
+ players.innerHTML=`<div class="card"><button class="btn primary" onclick="openPlayer()">+ Spieler</button></div>`+["F1","F2"].map(team=>`<div class="team-title">${team}</div>`+sortedPlayers(team).map(p=>`<div class="card"><div class="row"><div><b>${esc(p.name)}</b><div class="kpi-line"><span>#${esc(p.number||"-")}</span><span>${esc(p.position||"-")}</span><button onclick="showPlayerStat(\'${p.id}\',\'goals\')">⚽ ${goals(p.id)}</button><button onclick="showPlayerStat(\'${p.id}\',\'assists\')">🎯 ${assists(p.id)}</button><button onclick="showPlayerStat(\'${p.id}\',\'scorer\')">⭐ ${scorerPoints(p.id)}</button><button onclick="showPlayerStat(\'${p.id}\',\'training\')">🏃 ${attendance(p.id)}%</button><button onclick="showPlayerStat(\'${p.id}\',\'matches\')">🎮 ${games(p.id)} / ${matchPresence(p.id)}%</button></div></div><span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></div><button class="btn" onclick="openPlayer('${p.id}')">Bearbeiten</button> <button class="btn danger" onclick="delPlayer('${p.id}')">Löschen</button></div>`).join("")).join("");
 }
 function renderTraining(){training.innerHTML=`<div class="card"><button class="btn primary" onclick="openTraining()">+ Training</button></div>`+data.trainings.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="card"><b>${esc(t.date)}</b><div class="sub">${(t.att||[]).length} Teilnehmer</div><div class="kpi-line">${(t.skills||[]).map(s=>`<span>${esc(s)}</span>`).join("")}</div><br><button class="btn" onclick="openTraining('${t.id}')">Bearbeiten</button> <button class="btn danger" onclick="delTraining('${t.id}')">Löschen</button></div>`).join("")}
 function renderMatches(){matches.innerHTML=`<div class="card"><button class="btn primary" onclick="openMatch()">+ Spiel</button></div>`+data.matches.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<div class="card"><b>${m.team} · JSG ${m.gf}:${m.ga} ${esc(m.opp)}</b><div class="sub">${esc(m.date)} · Spieler: ${(m.players||[]).length}</div><div class="sub">${(m.goals||[]).map(g=>`⚽ ${esc(data.players.find(p=>p.id===g.scorer)?.name||"?")}${g.assist?` (🎯 ${esc(data.players.find(p=>p.id===g.assist)?.name||"?")})`:""}`).join("<br>")}</div><br><button class="btn" onclick="openMatch('${m.id}')">Bearbeiten</button> <button class="btn danger" onclick="delMatch('${m.id}')">Löschen</button></div>`).join("")}
-function rank(title,arr,unit){return `<div class="card"><h3>${title}</h3>${arr.map((r,i)=>`<div class="row"><span>${i+1}. ${esc(r.name)} <span class="badge ${r.team==="F2"?"black":""}">${r.team}</span></span><b>${r.value} ${unit}</b></div>`).join("")}</div>`}
+function rank(title,arr,unit,type){return `<div class="card"><h3>${title}</h3>${arr.map((r,i)=>`<div class="row" onclick="showRankingDetail('${r.id}','${type}')" style="cursor:pointer"><span>${i+1}. ${esc(r.name)} <span class="badge ${r.team==="F2"?"black":""}">${r.team}</span></span><b>${r.value} ${unit}</b></div>`).join("")}</div>`}
 function skillStats(){let counts={};data.trainings.forEach(t=>(t.skills||[]).forEach(s=>counts[s]=(counts[s]||0)+1));let total=data.trainings.length||1;return Object.entries(counts).map(([name,value])=>({name,team:"",value,percent:Math.round(value/total*100)})).sort((a,b)=>b.value-a.value).slice(0,10)}
-function renderStats(){let base=fn=>data.players.map(p=>({name:p.name,team:p.team,value:fn(p.id)})).sort((a,b)=>b.value-a.value);stats.innerHTML=rank("⚽ Torjäger",base(goals),"Tore")+rank("🎯 Assist-König",base(assists),"Assists")+rank("⭐ Scorerpunkte",base(scorerPoints),"Punkte")+rank("🏃 Trainingsanwesenheit",base(attendance),"%")+rank("🎮 Spieleinsätze",base(games),"Spiele")+rank("🎮 Spielteilnahme",base(matchPresence),"%")+`<div class="card"><h3>Top 10 Fähigkeiten</h3>${skillStats().map((s,i)=>`<div class="row"><span>${i+1}. ${esc(s.name)}</span><b>${s.value}x · ${s.percent}%</b></div>`).join("")||"<div class='sub'>Noch keine Trainingsdaten.</div>"}</div>`}
+
+function showSkillDetail(skill){
+  const rows=data.trainings.filter(t=>(t.skills||[]).includes(skill)).map(t=>({date:t.date,text:`${fmtDate(t.date)} · ${skill} · ${(t.att||[]).length} Teilnehmer`})).sort((a,b)=>b.date.localeCompare(a.date));
+  const list=rows.length ? rows.map(r=>`<div class="row"><span>${r.text}</span></div>`).join("") : `<div class="sub">Noch keine Trainingsdaten.</div>`;
+  openModal(`<h2>${esc(skill)}</h2><div class="card"><div class="value">${rows.length}x</div><div class="sub">Diese Fähigkeit wurde in ${rows.length} Trainings dokumentiert.</div></div><div class="card">${list}</div><button class="btn primary" onclick="closeModal()">Schließen</button>`);
+}
+
+function renderStats(){let base=fn=>data.players.map(p=>({id:p.id,name:p.name,team:p.team,value:fn(p.id)})).sort((a,b)=>b.value-a.value);stats.innerHTML=rank("⚽ Torjäger",base(goals),"Tore","goals")+rank("🎯 Assist-König",base(assists),"Assists","assists")+rank("⭐ Scorerpunkte",base(scorerPoints),"Punkte","scorer")+rank("🏃 Trainingsanwesenheit",base(attendance),"%","training")+rank("🎮 Spieleinsätze",base(games),"Spiele","games")+rank("🎮 Spielteilnahme",base(matchPresence),"%","matchPresence")+`<div class="card"><h3>Top 10 Fähigkeiten</h3>${skillStats().map((s,i)=>`<div class="row" onclick="showSkillDetail('${esc(s.name)}')" style="cursor:pointer"><span>${i+1}. ${esc(s.name)}</span><b>${s.value}x · ${s.percent}%</b></div>`).join("")||"<div class='sub'>Noch keine Trainingsdaten.</div>"}</div>`}
+
+function rankPosition(pid, fn, desc=false){
+  const arr=data.players.map(p=>({id:p.id,value:fn(p.id)})).sort((a,b)=>desc?b.value-a.value:a.value-b.value);
+  const idx=arr.findIndex(x=>x.id===pid);
+  return idx>=0 ? idx+1 : "-";
+}
+function playerTeamMatches(pid){
+  const p=data.players.find(x=>x.id===pid);
+  if(!p) return 0;
+  return teamMatches(p.team).length;
+}
+function playerWins(pid){
+  return data.matches.filter(m=>(m.players||[]).includes(pid) && Number(m.gf)>Number(m.ga)).length;
+}
+
+function fmtDate(d){return d ? d.split("-").reverse().join(".") : "-"}
+function showDashboardStat(label,value,sub){
+  let explanation = {
+    "Spieler gesamt":"Zeigt die Gesamtzahl aller aktiven Spieler im Kader. Darunter sieht man die Aufteilung zwischen F1 und F2.",
+    "F1 Spieler":"Anzahl der aktuell der F1 zugeordneten Spieler. Wenn ein Spieler die Mannschaft wechselt, wird dieser Wert automatisch aktualisiert.",
+    "F2 Spieler":"Anzahl der aktuell der F2 zugeordneten Spieler. Wenn ein Spieler die Mannschaft wechselt, wird dieser Wert automatisch aktualisiert.",
+    "F1 Siegquote":"Anteil der gewonnenen F1-Spiele an allen gespeicherten F1-Spielen.",
+    "F2 Siegquote":"Anteil der gewonnenen F2-Spiele an allen gespeicherten F2-Spielen.",
+    "Tore F1":"Alle Tore, die in gespeicherten F1-Spielen für die JSG eingetragen wurden.",
+    "Tore F2":"Alle Tore, die in gespeicherten F2-Spielen für die JSG eingetragen wurden.",
+    "Assists F1":"Alle Vorlagen von F1-Spielern, die bei Toren eingetragen wurden.",
+    "Assists F2":"Alle Vorlagen von F2-Spielern, die bei Toren eingetragen wurden.",
+    "Training F1":"Durchschnittliche Trainingsanwesenheit aller F1-Spieler.",
+    "Training F2":"Durchschnittliche Trainingsanwesenheit aller F2-Spieler.",
+    "Spielteilnahme F1":"Durchschnittliche Teilnahme der F1-Spieler an F1-Spielen.",
+    "Spielteilnahme F2":"Durchschnittliche Teilnahme der F2-Spieler an F2-Spielen.",
+    "Torjäger":"Spieler mit den meisten eingetragenen Toren.",
+    "Assist-König":"Spieler mit den meisten eingetragenen Vorlagen.",
+    "Meiste Spiele":"Spieler mit den meisten Spieleinsätzen.",
+    "Training Top":"Spieler mit der höchsten Trainingsanwesenheit."
+  }[label] || "Diese Kennzahl wird automatisch aus den gespeicherten Trainings- und Spieldaten berechnet.";
+  openModal(`<h2>${esc(label)}</h2><div class="card"><div class="value">${esc(value)}</div><div class="sub">${esc(sub)}</div><p>${explanation}</p></div><button class="btn primary" onclick="closeModal()">Schließen</button>`);
+}
+function playerGoalDates(pid){
+  return data.matches.flatMap(m=>(m.goals||[]).filter(g=>g.scorer===pid).map(g=>({date:m.date, text:`${fmtDate(m.date)} · ${m.team} gegen ${esc(m.opp)} · Tor` }))).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function playerAssistDates(pid){
+  return data.matches.flatMap(m=>(m.goals||[]).filter(g=>g.assist===pid).map(g=>({date:m.date, text:`${fmtDate(m.date)} · ${m.team} gegen ${esc(m.opp)} · Assist` }))).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function playerMatchDates(pid){
+  return data.matches.filter(m=>(m.players||[]).includes(pid)).map(m=>({date:m.date, text:`${fmtDate(m.date)} · ${m.team} gegen ${esc(m.opp)} · Ergebnis ${m.gf}:${m.ga}`})).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function playerTrainingDates(pid){
+  return data.trainings.filter(t=>(t.att||[]).includes(pid)).map(t=>({date:t.date, text:`${fmtDate(t.date)} · Training${(t.skills||[]).length ? " · " + t.skills.map(esc).join(", ") : ""}`})).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function showRankingDetail(pid,type){
+  const p=data.players.find(x=>x.id===pid);
+  if(!p) return;
+  const config={
+    goals:{title:"⚽ Tore", value:goals(pid)+" Tore", rows:playerGoalDates(pid)},
+    assists:{title:"🎯 Assists", value:assists(pid)+" Assists", rows:playerAssistDates(pid)},
+    scorer:{title:"⭐ Scorerpunkte", value:scorerPoints(pid)+" Punkte", rows:[...playerGoalDates(pid),...playerAssistDates(pid)].sort((a,b)=>b.date.localeCompare(a.date))},
+    training:{title:"🏃 Trainingsanwesenheit", value:attendance(pid)+"%", rows:playerTrainingDates(pid)},
+    games:{title:"🎮 Spieleinsätze", value:games(pid)+" Spiele", rows:playerMatchDates(pid)},
+    matchPresence:{title:"🎮 Spielteilnahme", value:matchPresence(pid)+"%", rows:playerMatchDates(pid)}
+  }[type];
+  const list=config.rows.length ? config.rows.map(r=>`<div class="row"><span>${r.text}</span></div>`).join("") : `<div class="sub">Noch keine Einträge vorhanden.</div>`;
+  openModal(`<h2>${config.title}</h2><div class="card"><h3>${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></h3><div class="value">${config.value}</div><div class="sub">Detailhistorie nach Datum</div></div><div class="card">${list}</div><button class="btn primary" onclick="closeModal()">Schließen</button>`);
+}
+
+function showPlayerStat(pid,type){
+  const p=data.players.find(x=>x.id===pid);
+  if(!p) return;
+  const g=goals(pid), a=assists(pid), sp=scorerPoints(pid), tr=attendance(pid), gm=games(pid), mp=matchPresence(pid);
+  const teamGames=playerTeamMatches(pid);
+  const wins=playerWins(pid);
+  const scorerPerGame=gm ? (sp/gm).toFixed(2) : "0.00";
+  const goalsPerGame=gm ? (g/gm).toFixed(2) : "0.00";
+  const assistsPerGame=gm ? (a/gm).toFixed(2) : "0.00";
+  const trainingDone=data.trainings.length;
+  const trainingPresent=data.trainings.filter(t=>(t.att||[]).includes(pid)).length;
+  const blocks={
+    goals:{
+      title:"⚽ Tore",
+      value:g+" Tore",
+      text:`${esc(p.name)} hat ${g} Tore erzielt. Das entspricht ${goalsPerGame} Toren pro Spiel. Rang ${rankPosition(pid,goals,true)} in der Torjägerliste.`
+    },
+    assists:{
+      title:"🎯 Assists",
+      value:a+" Assists",
+      text:`${esc(p.name)} hat ${a} Vorlagen gegeben. Das entspricht ${assistsPerGame} Assists pro Spiel. Rang ${rankPosition(pid,assists,true)} in der Assist-Liste.`
+    },
+    scorer:{
+      title:"⭐ Scorerpunkte",
+      value:sp+" Punkte",
+      text:`Scorerpunkte = Tore + Assists. ${esc(p.name)} steht bei ${sp} Scorerpunkten, also ${scorerPerGame} pro Spiel. Rang ${rankPosition(pid,scorerPoints,true)} im Scorer-Ranking.`
+    },
+    training:{
+      title:"🏃 Trainingsanwesenheit",
+      value:tr+"%",
+      text:`${esc(p.name)} war bei ${trainingPresent} von ${trainingDone} Trainings anwesend. Das ergibt ${tr}% Trainingsanwesenheit. Rang ${rankPosition(pid,attendance,true)} im Trainingsranking.`
+    },
+    matches:{
+      title:"🎮 Spieleinsätze & Teilnahme",
+      value:gm+" Spiele · "+mp+"%",
+      text:`${esc(p.name)} hat ${gm} von ${teamGames} Spielen seines Teams mitgemacht. Das entspricht ${mp}% Spielteilnahme. In diesen Einsätzen gab es ${wins} Siege.`
+    }
+  };
+  const b=blocks[type];
+  openModal(`<h2>${b.title}</h2><div class="card"><h3>${esc(p.name)} <span class="badge ${p.team==="F2"?"black":""}">${p.team}</span></h3><div class="value">${b.value}</div><p class="sub">${b.text}</p><div class="kpi-line"><span>⚽ ${g}</span><span>🎯 ${a}</span><span>⭐ ${sp}</span><span>🏃 ${tr}%</span><span>🎮 ${gm}/${mp}%</span></div></div><button class="btn primary" onclick="closeModal()">Schließen</button>`);
+}
+
 function openModal(h){dialog.innerHTML=h;modal.classList.add("open")}function closeModal(){modal.classList.remove("open")}
 function openQuick(){openModal(`<h2>Neu</h2><button class="btn primary" onclick="openPlayer()">Spieler</button> <button class="btn primary" onclick="openTraining()">Training</button> <button class="btn primary" onclick="openMatch()">Spiel</button>`)}
 function openPlayer(pid=""){let p=data.players.find(x=>x.id===pid)||{id:"",name:"",team:"F1",number:"",position:""};openModal(`<h2>${pid?"Spieler bearbeiten":"Neuer Spieler"}</h2><input id="pn" placeholder="Name" value="${esc(p.name)}"><select id="pt"><option ${p.team==="F1"?"selected":""}>F1</option><option ${p.team==="F2"?"selected":""}>F2</option></select><input id="num" placeholder="Nummer" value="${esc(p.number)}"><input id="pos" placeholder="Position" value="${esc(p.position)}"><button class="btn primary" onclick="savePlayer('${pid}')">Speichern</button>`)}
