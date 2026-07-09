@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>JSG Team Manager V1.3</title>
+<title>JSG Team Manager V1.4</title>
 <style>
 :root {
   --red:#c8102e; --black:#111; --bg:#f5f5f7; --card:#fff; --text:#111; --muted:#777; --line:#e5e5e5;
@@ -82,7 +82,7 @@ textarea { min-height:80px; resize:vertical; }
     <button onclick="show('matches',this)"><span class="ico">⚽</span><span>Spiele</span></button>
     <button onclick="show('stats',this)"><span class="ico">📊</span><span>Stats</span></button>
   </nav>
-  <div class="trainer-box"><b>Trainerteam</b><br><span id="trainerList"></span><br><br>Keine Fotos, keine Kontaktdaten, keine medizinischen Daten.</div>
+  <div class="trainer-box"><b>Trainerteam</b><br><span id="trainerList"></span></div>
 </header>
 <main class="main">
   <div class="top">
@@ -104,15 +104,42 @@ textarea { min-height:80px; resize:vertical; }
 </div>
 <div class="modal" id="modal" onclick="if(event.target===modal)closeModal()"><div class="dialog" id="dialog"></div></div>
 <script>
-const KEY="jsg-v13";
+const KEY="jsg-v14";
 const old=JSON.parse(localStorage.getItem("jsg-v12")||"null");
 let data=JSON.parse(localStorage.getItem(KEY)||"null")||old||{players:[],trainings:[],matches:[],coaches:["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"]};
 if(!data.coaches) data.coaches=["Gabriel Schwarzer","Andreas Mausberg","Thorsten Krüger","Christian Ellmann"];
 if(data.players.length===0){
- data.players=[{id:id(),name:"Leon",team:"F1",number:"10",position:""},{id:id(),name:"Finn",team:"F1",number:"7",position:""},{id:id(),name:"Ben",team:"F2",number:"9",position:""}];
+ data.players=[
+  {id:id(),name:"Bernardo Schwarzer",team:"F1",number:"",position:""},
+  {id:id(),name:"Anton Mausberg",team:"F1",number:"",position:""},
+  {id:id(),name:"Philipp Krüger",team:"F1",number:"",position:""},
+  {id:id(),name:"Ben Hufer",team:"F1",number:"",position:""},
+  {id:id(),name:"Emilian Fundament",team:"F1",number:"",position:""},
+  {id:id(),name:"Felix Lammertz",team:"F1",number:"",position:""},
+  {id:id(),name:"Noah Ellmann",team:"F1",number:"",position:""},
+  {id:id(),name:"Luca Bickei",team:"F1",number:"",position:""},
+  {id:id(),name:"Joshua Bickei",team:"F1",number:"",position:""},
+  {id:id(),name:"Felix Korbmacher",team:"F1",number:"",position:""},
+  {id:id(),name:"Noah Papen",team:"F1",number:"",position:""},
+  {id:id(),name:"Jonathan Schmalor",team:"F2",number:"",position:""},
+  {id:id(),name:"Adrian Kristensen",team:"F2",number:"",position:""},
+  {id:id(),name:"Constantin Plachta",team:"F2",number:"",position:""},
+  {id:id(),name:"Emil Rothgangel",team:"F2",number:"",position:""},
+  {id:id(),name:"Georg Lindemann-Mandok",team:"F2",number:"",position:""},
+  {id:id(),name:"Hannah Billert",team:"F2",number:"",position:""},
+  {id:id(),name:"Henry Riemer",team:"F2",number:"",position:""},
+  {id:id(),name:"Leonard Holzapfel",team:"F2",number:"",position:""},
+  {id:id(),name:"Merle Böckmann",team:"F2",number:"",position:""},
+  {id:id(),name:"Paul Neupert",team:"F2",number:"",position:""},
+  {id:id(),name:"Paulin Naunheim",team:"F2",number:"",position:""},
+  {id:id(),name:"Yannik Ahlers",team:"F2",number:"",position:""},
+  {id:id(),name:"Johann Ammermann",team:"F2",number:"",position:""},
+  {id:id(),name:"Lion Möller",team:"F2",number:"",position:""},
+  {id:id(),name:"Ole Levsen",team:"F2",number:"",position:""}
+ ];
  save();
 }
-const SKILLS=["Balance","Torschuss","Pass","Ballkontrolle","Schnelligkeit","Koordination","Raumgefühl","Dribbling","Zweikampf","Spielaufbau","Torwart","Teamwork"];
+const SKILLS=["Balance","Torschuss","Pass","Ballkontrolle","Schnelligkeit","Koordination","Raumgefühl","Dribbling","Zweikampf","Spielaufbau","Torwart","Torwarttraining","Teamwork"];
 function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
